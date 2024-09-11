@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="main.css">
+  <meta charset="UTF-8">
+  <title>SwiftLLM</title>
+</head>
+<body>
+  <div id="side-bar">
+    <button id="toggle-button"><img src="./assets/icon.png" class="collapsed-menu-logo-swiftllm"></button>
+    <div class="menu-content">
+      <div class="dropdown-section llm-dropdown-section">
+        <div onclick="selectLLM('perplexity')" id="perplexity-option">Perplexity AI</div>
+        <div onclick="selectLLM('copilot')" id="copilot-option">Copilot</div>
+        <div onclick="selectLLM('gemini')" id="gemini-option">Gemini</div>
+        <div onclick="selectLLM('chatgpt')" id="chatgpt-option">ChatGPT</div>
+        <div onclick="selectLLM('perplexitylabs')" id="perplexitylabs-option">Perplexity Labs</div>
+        <div onclick="selectLLM('mistral')" id="mistral-option">Mistral</div>
+        <div onclick="selectLLM('claude')" id="claude-option">Claude</div>
+        <div onclick="selectLLM('custom1')" id="custom1-option">1 Custom</div>
+        <div onclick="selectLLM('custom2')" id="custom2-option">2 Custom</div>
+        <div onclick="selectLLM('custom3')" id="custom3-option">3 Custom</div>
+        <div onclick="selectLLM('custom4')" id="custom4-option">4 Custom</div>
+        <div onclick="selectLLM('custom5')" id="custom5-option">5 Custom</div>
+        <div onclick="selectLLM('custom6')" id="custom6-option">6 Custom</div>
+      </div>
+      <div class="dropdown-section">
+        <div onclick="toggleOpenLinkExternal()" id="open-link-external">Open Link External</div>
+      </div>
+      <div class="dropdown-section">
+        <div onclick="navigateBackLLM()" id="back-llm">Back (LLM)</div>
+        <div onclick="navigateForwardLLM()" id="forward-llm">Forward</div>
+        <div onclick="refreshPageLLM()" id="refresh-llm">Refresh</div>
+        <div onclick="navigateHomeLLM()" id="home-llm">Home</div>
+      </div>
+      <div class="dropdown-section">
+        <div onclick="toggleBrowserView();" id="browser-view-option">+ Browser View</div>
+      </div>
+      <div class="dropdown-section">
+        <div onclick="navigateBackBrowser()" id="back-browser">Back (Browser)</div>
+        <div onclick="navigateForwardBrowser()" id="forward-browser">Forward</div>
+        <div onclick="refreshPageBrowser()" id="refresh-browser">Refresh</div>
+        <div onclick="navigateHomeBrowser()" id="home-browser">Home</div>
+      </div>
+    </div>
+  </div>
+  <div id="llm-container">
+    <webview id="perplexity" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="copilot" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="gemini" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="chatgpt" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="perplexitylabs" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="mistral" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="claude" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="custom1" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="custom2" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="custom3" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="custom4" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="custom5" class="llm-browser" preload="./preload.js"></webview>
+    <webview id="custom6" class="llm-browser" preload="./preload.js"></webview>
+  </div>
+  <div id="browser-container">
+    <webview id="browser-webview" class="web-browser" src="https://www.google.com/" preload="./preload.js"></webview>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>
+<div id="fullscreen-menu">
+  <div class="settings-header">
+    <h3>Settings</h3>
+    <button id="close-button">✖</button>
+  </div>
+  <div class="setting-option">
+    <input onclick="changeSetting(this.checked, 'preventMenuExpansion')" type="checkbox" id="preventMenuExpansion" class="checkboxes"><label for="preventMenuExpansion">Prevent Menu Expansion</label>
+  </div>
+  <div class="setting-option">
+    <input onclick="changeSetting(this.checked, 'enableAdblocker')" type="checkbox" id="enableAdblocker" class="checkboxes"><label for="enableAdblocker">Enable Ad Blocker</label>
+  </div>
+  <div class="setting-option">
+    <input onclick="changeSetting(this.checked, 'launchAtStartup')" type="checkbox" id="launchAtStartup" class="checkboxes"><label for="launchAtStartup">Launch at OS Startup</label>
+  </div>
+  <div class="setting-option">
+    <input onclick="changeSetting(this.checked, 'setting4')" type="checkbox" id="setting4" class="checkboxes"><label for="setting4">Setting 4</label>
+  </div>
+  <div class="setting-option" id="debug" style="display: none;">Debug</div>
+</div>
+</div>

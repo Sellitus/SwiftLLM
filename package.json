@@ -1,0 +1,44 @@
+{
+  "name": "swift-llm",
+  "version": "1.0.0",
+  "description": "A cross-platform app to access LLMs with hotkeys.",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "package-mac-arm": "electron-packager . SwiftLLM --platform=darwin --arch=arm64 --overwrite --icon=assets/icon.ico --out=builds/mac-arm --copy-files",
+    "package-mac-x64": "electron-packager . SwiftLLM --platform=darwin --arch=x64 --overwrite --icon=assets/icon.ico --out=builds/mac-x64 --copy-files",
+    "package-win-arm": "electron-packager . SwiftLLM --platform=win32 --arch=arm64 --overwrite --icon=assets/icon.ico --out=builds/win-arm --copy-files",
+    "package-win-x64": "electron-packager . SwiftLLM --platform=win32 --arch=x64 --overwrite --icon=assets/icon.ico --out=builds/win-x64 --copy-files",
+    "package-lin-arm": "electron-packager . SwiftLLM --platform=linux --arch=arm64 --overwrite --icon=assets/icon.ico --out=builds/lin-arm --copy-files",
+    "package-lin-x64": "electron-packager . SwiftLLM --platform=linux --arch=x64 --overwrite --icon=assets/icon.ico --out=builds/lin-x64 --copy-files",
+    "build-mac-arm": "electron-builder --mac --arm64",
+    "build-mac-x64": "electron-builder --mac --x64",
+    "debug": "node index.js --web"
+  },
+  "build": {
+    "productName": "SwiftLLM",
+    "appId": "sellitus.net.swiftllm",
+    "asar": true,
+    "win": {
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "icon": "assets/icon.ico"
+    },
+    "linux": {
+      "icon": "assets/icon.png"
+    }
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.3.5",
+    "electron": "^32.0.2",
+    "electron-builder": "^25.0.5",
+    "node": "^22.8.0"
+  },
+  "dependencies": {
+    "@cliqz/adblocker-electron": "^1.33.2",
+    "cross-fetch": "^4.0.0",
+    "dns-over-tls": "^0.0.9",
+    "os": "^0.1.2"
+  }
+}

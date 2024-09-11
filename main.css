@@ -1,0 +1,203 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+#side-bar {
+    width: 25px;
+    /* Collapsed width */
+    height: 100%;
+    background-color: #333;
+    overflow: hidden;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    transition: width 0.1s;
+    text-align: center;
+    position: relative;
+    /* To keep it next to the webview */
+}
+
+#side-bar.expanded {
+    width: 150px;
+    /* Expanded width */
+}
+
+#toggle-button {
+    width: 100%;
+    background-color: #444;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    text-align: center;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+}
+
+#toggle-button:hover {
+    background-color: #555;
+}
+
+.menu-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+#side-bar.expanded .menu-content {
+    display: flex;
+}
+
+#fullscreen-menu {
+    width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+}
+
+.settings-header>h3 {
+    margin: 5px 5px 11px 5px;
+}
+
+#close-button {
+    cursor: pointer;
+    background-color: #555;
+    padding: 3px;
+    margin: -6px 7px 0 auto;
+    transition: background-color 0.3s;
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    color: #ffffff;
+    border: none;
+}
+
+.setting-option {
+    margin: 0 0 4px 5px;
+    display: flex;
+}
+
+.setting-option>label {
+    margin-top: -3.5px;
+}
+
+.dropdown-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.dropdown-section>div {
+    padding: 3px 5px;
+    /* Smaller padding */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    /* Prevent text from wrapping */
+    background-color: #444;
+    margin-bottom: 3px;
+}
+
+.dropdown-section>div:hover {
+    background-color: #555;
+}
+
+.dropdown-section>div.selected {
+    background-color: #222;
+    font-weight: bold;
+}
+
+.dropdown-section>#open-link-external {
+    margin-left: -3.5px;
+}
+
+.collapsed-menu-logo {
+    width: 17px;
+    height: 17px;
+}
+
+.collapsed-menu-logo-long {
+    width: 24px;
+    height: 13px;
+    margin: 3px 0 3px -1.8px;
+}
+
+.collapsed-menu-logo-swiftllm {
+    width: 20px;
+    height: 20px;
+}
+
+.slide-in {
+    transition: width 0.1s ease-in-out;
+}
+
+#claude-logo {
+    margin-left: -.8px;
+}
+
+#copilot-logo,
+#mistral-logo {
+    margin-left: -1px;
+}
+
+#llm-container {
+    flex: 1;
+    height: 100vh;
+    /* Fill remaining vertical space */
+    display: flex;
+}
+
+webview {
+    flex: 1;
+    height: 100%;
+    background-color: #1e1e1e;
+    transition: width 0.3s;
+}
+
+webview.active {
+    display: flex;
+    /* Show active webview */
+}
+
+#browser-container {
+    flex: 1;
+    height: 100vh;
+    display: flex;
+    position: relative;
+}
+
+#browser-container.active {
+    display: flex;
+}
+
+#browser-webview {
+    flex: 1;
+    height: 100%;
+    background-color: #1e1e1e;
+    transition: width 0.3s;
+}
+
+#browser-webview.active {
+    display: flex;
+}
