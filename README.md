@@ -18,7 +18,7 @@ I use LLMs, and I just LLMs A LOT. Because of this I (used to) have an entire br
 - Constantly switching between LLM tabs is a pain too, especially when managing excessive tabs.
     - SwiftLLM: Many LLM tabs are included in the UI, allowing quick switching from one to another.
 - I don't like advertisements
-    - SwiftLLM: You can prevent your eyes burning due to advertisements, by utilizing a built-in adblocker that autoupdates itself every hour. (NOTE: Includes many blocklists, but made to be as non-intrusive as possible. Disabling the adblocker will immediately disable it, if you encounter any website problems.)
+    - SwiftLLM: You can prevent your eyes burning due to advertisements, by utilizing a built-in adblocker that autoupdates itself every hour. (NOTE: Includes Hagezi Pro which should cover all needs. If you add more blocklists, you may have stability issues when visiting certain websites.)
 - I don't like the LLMs that are included, and I want one of the LLM tabs to load a web page that isn't an LLM
     - SwiftLLM: You can change the URLs of the included LLMs to any URL you want, LLM or not, using the config file.
 
@@ -49,17 +49,20 @@ I use LLMs, and I just LLMs A LOT. Because of this I (used to) have an entire br
 ## How to Build
 
 #### This script will compile the app for your system, shut down the app if it is running, copy the app to an easy to run location for your OS and then run the app:
-- ./bld_and_cp_wsl.sh [windows_user_folder_name] [platform] [architecture]
-- ./bld_and_cp_wsl.sh sellitus win arm
+- ./bld_and_cp_wsl.sh [platform] [architecture] [windows_user_folder_name] 
+- ./bld_and_cp_wsl.sh win x64 sellitus
+- ./bld_and_cp_wsl.sh win arm sellitus
+- ./bld_and_cp_wsl.sh mac x64
+- ./bld_and_cp_wsl.sh mac arm
 
-### If you want to update the packages npm uses, run the following command then rebuild:
+### If you want to update the packages npm uses, run the following command, then rebuild:
 - ./update_packages_latest.sh
 
-### Create an OSX ARM / x64 .app file: 
+### Only create an OSX ARM / x64 .app file: 
 - npm run package-mac-arm
 - npm run package-mac-x64
 
-### Create a Windows ARM / x64 .exe file/folder: 
+### Only create a Windows ARM / x64 .exe file/folder: 
 - npm run package-win-arm
 - npm run package-win-x64
 
