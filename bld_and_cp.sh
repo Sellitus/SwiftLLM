@@ -78,7 +78,6 @@ else # platform == "mac"
     echo ""
 
     osascript -e 'quit app "SwiftLLM.app"'
-    rm -rf ~/Applications/SwiftLLM.app
 
     # set subfolder to arm64 if $architecture is 'arm', else set it to x64
     subfolder_architecture=$(if [[ "$architecture" == "arm" ]]; then echo "arm64"; else echo "x64"; fi)

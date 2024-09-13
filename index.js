@@ -44,15 +44,6 @@ console.error = function(...args) {
 
 
 
-// // Configure autoUpdater
-// autoUpdater.autoDownload = true;
-// autoUpdater.autoInstallOnAppQuit = true;
-
-// function checkForUpdates() {
-//   autoUpdater.checkForUpdates();
-// }
-
-
 
 // Initial creation of the blocker
 let blocker;
@@ -80,25 +71,17 @@ async function createAndUpdateBlocker(session) {
       cachePath = path.join(__dirname, '../../adblocker_cache.bin');
     }
     
-    if (blocker) {
-      await blocker.updateFromLists(fetch, [HAGEZI_LIST_URL], {
-        path: cachePath,
-        read: fs.readFile,
-        write: fs.writeFile,
-      });
-      console.log('Adblocker updated');
-    } else {
-      blocker = await ElectronBlocker.fromLists(fetch, [HAGEZI_LIST_URL], {
-        path: cachePath,
-        read: fs.readFile,
-        write: fs.writeFile,
-      });
-      const sessions = BrowserWindow.getAllWindows().map(window => window.webContents.session);
-      sessions.forEach(session => {
-        blocker.enableBlockingInSession(session);
-      });
-      console.log('Adblocker created and enabled');
-    }
+    blocker = await ElectronBlocker.fromLists(fetch, [HAGEZI_LIST_URL], {
+      path: cachePath,
+      read: fs.readFile,
+      write: fs.writeFile,
+    });
+    const sessions = BrowserWindow.getAllWindows().map(window => window.webContents.session);
+    sessions.forEach(session => {
+      blocker.enableBlockingInSession(session);
+    });
+    console.log('Adblocker created and enabled');
+    
     return blocker;
   } catch (error) {
     console.error('Failed to update adblocker:', error);
@@ -113,6 +96,9 @@ function disableAdblocker() {
       blocker.disableBlockingInSession(session);
     });
     console.log('Adblocker disabled');
+
+    blocker = null;
+    intervalId = null;
   }
 }
 
@@ -163,17 +149,6 @@ ipcMain.on('call-disableLaunchAtStartup', (event) => {
   setLaunchAtStartup(false);
 });
 
-
-
-
-
-// ElectronBlocker.fromPrebuiltAdsAndTracking(fetch, {
-//   path: 'engine.bin',
-//   read: fs.readFile,
-//   write: fs.writeFile,
-// }).then((blocker) => {
-//   blocker.enableBlockingInSession(session.defaultSession);
-// });
 
 
 
@@ -343,63 +318,6 @@ const registerShortcutLock = () => {
 let dns_server = '663533.dns.nextdns.io'
 let dns_ip = '45.90.28.15'
 
-// // Attempt 1
-// async function resolveDnsOverTls(hostname, rrtype = 'A') {
-//   const options = {
-//       name: hostname,
-//       host: dns_ip, // Cloudflare DNS server
-//       servername: dns_server,
-//       type: rrtype,
-//   };
-//   try {
-//       const response = await dnstls.query(options);
-//       console.log(response);
-//       return response.answers.map(answer => answer.data);
-//   } catch (error) {
-//       console.error('DNS-over-TLS query failed:', error);
-//       throw error;
-//   }
-// }
-
-// // Override the default dns.lookup method
-// dns.lookup = (hostname, options, callback) => {
-//   if (typeof options === 'function') {
-//       callback = options;
-//       options = {};
-//   }
-//   const rrtype = options.family === 6 ? 'AAAA' : 'A';
-//   resolveDnsOverTls(hostname, rrtype)
-//       .then(addresses => {
-//           if (options.all) {
-//               callback(null, addresses.map(address => ({ address, family: rrtype === 'AAAA' ? 6 : 4 })));
-//           } else {
-//               callback(null, addresses[0], rrtype === 'AAAA' ? 6 : 4);
-//           }
-//           console.log(addresses);
-//       })
-//       .catch(callback);
-// };
-
-// // Attempt 2
-// const options = {
-//   host: dns_ip,
-//   servername: dns_server,
-//   port: 853,
-// };
-
-// const sessions = BrowserWindow.getAllWindows().map(window => window.webContents.session);
-// sessions.forEach(session => {
-//   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
-//     const url = details.url;
-//     const hostname = url.split(':')[0];
-  
-//     dnstls.query(hostname, options).then((dnsResponse) => {
-//       const ip = dnsResponse.answers[0].data;
-//       callback({ cancel: true, redirectURL: `http://${ip}:80` });
-//     });
-//   });
-// });
-
 
 
 app.whenReady().then(() => {
@@ -494,11 +412,6 @@ app.whenReady().then(() => {
 
   tray.setToolTip('SwiftLLM');
   tray.setContextMenu(contextMenuTrayIcon);
-
-  // if (os.platform() === 'darwin') {
-  //   // macOS specific code
-  //   app.dock.hide();
-  // }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow();

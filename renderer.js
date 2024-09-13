@@ -14,10 +14,10 @@ let baseUrls = {
   mistral: "https://chat.mistral.ai/chat",
   claude: "https://claude.ai/new",
   custom1: "http://127.0.0.1:7860",
-  custom2: "https://www.wikipedia.org/",
-  custom3: "https://scholar.google.com/",
-  custom4: "https://researchrabbitapp.com/home",
-  custom5: "https://www.connectedpapers.com/",
+  custom2: "https://scholar.google.com/",
+  custom3: "https://researchrabbitapp.com/home",
+  custom4: "https://www.connectedpapers.com/",
+  custom5: "https://music.youtube.com/",
   custom6: "https://www.google.com/",
   browserHomeUrl: "https://www.google.com/"
 };
@@ -33,7 +33,11 @@ let fullNames = {};
 // Load settings from the config file
 let config = {};
 
-
+// Keeps track of which LLMs have been loaded, so it doesn't reload the page when reselected
+let loadedLLMs = {};
+Object.keys(baseUrls).forEach(key => {
+  loadedLLMs[key] = false;
+});
 
 
 // Initialize by saving all fullNames
@@ -158,23 +162,6 @@ menuIcon.addEventListener('click', () => {
 
 
 
-
-// // Step 3: Make gear icon clickable
-// menuIcon.addEventListener('click', function() {
-//   // Step 4: Slide in full screen menu
-//   let fullScreenMenu = document.getElementById('full-screen-menu');
-//   fullScreenMenu.style.width = '100%'; // Assuming fullScreenMenu is initially hidden or has width 0
-//   fullScreenMenu.classList.add('slide-in'); // CSS class for sliding animation
-
-//   // Optional: Close button inside full-screen menu
-//   let closeButton = document.createElement('button');
-//   closeButton.textContent = 'Close';
-//   closeButton.onclick = function() {
-//     fullScreenMenu.style.width = '0'; // Hide full screen menu
-//   };
-//   fullScreenMenu.appendChild(closeButton);
-// });
-
 function collapseMenu() {
   if (!sidebarExpanded) return;
 
@@ -250,6 +237,13 @@ let llmId = '';
 
 function selectLLM(llmId) {
   llmId = llmId;
+
+  let selectedWebview = document.getElementById(llmId);
+  if (loadedLLMs[llmId] === false) {
+    selectedWebview.src = config.baseUrls[llmId];
+    loadedLLMs[llmId] = true;
+  }
+
   // Update the dropdown to highlight the selected option
   let options = document.querySelectorAll('.llm-dropdown-section > div');
   options.forEach(option => {
@@ -272,7 +266,6 @@ function selectLLM(llmId) {
   });
 
   // Show the selected webview
-  let selectedWebview = document.getElementById(llmId);
   if (selectedWebview) {
     selectedWebview.classList.add('active');
     selectedWebview.classList.remove('inactive');
@@ -302,7 +295,7 @@ function selectURL(url) {
 
   focusWebview('browser-webview');
 
-  // pauseInactiveResumeActiveLLM();
+  pauseInactiveResumeActiveLLM();
 }
 
 
@@ -336,10 +329,6 @@ function refreshPageLLM() {
 function navigateHomeLLM() {
   let activeWebview = document.querySelector('.llm-browser.active');
   let llmId = activeWebview.id;
-
-  if (activeWebview) {
-    activeWebview.src = config.baseUrls[llmId];
-  }
 
   // Create a new webview instance
   let newWebview = document.createElement('webview');
@@ -425,24 +414,27 @@ function navigateHomeBrowser() {
 
 
 
-// function pauseInactiveLLMs() {
-//   let webviews = document.querySelectorAll('.llm-browser.inactive');
-//   webviews.forEach(webview => {
-//     webview.pause();
-//   });
-// }
+function pauseInactiveLLMs() {
+  let webviews = document.querySelectorAll('.llm-browser.inactive');
+  webviews.forEach(webview => {
+    webview.getWebContents().setBackgroundThrottling(false);  // Prevent throttling in the background
+    // webview.executeJavaScript('document.querySelectorAll("video, audio").forEach(el => el.pause())');  // Pause media in tab. Disabling so music can be played in the background using SwiftLLM eventually (might take special code to not disable scripts on the media page)
+    webview.getWebContents().pause();
+  });
+}
 
-// function resumeActiveLLM() {
-//   let webviews = document.querySelectorAll('.llm-browser.active');
-//   webviews.forEach(webview => {
-//     webview.resume();
-//   });
-// }
+function resumeActiveLLM() {
+  let webviews = document.querySelectorAll('.llm-browser.active');
+  webviews.forEach(webview => {
+    webview.getWebContents().setBackgroundThrottling(true);
+    webview.getWebContents().resume();
+  });
+}
 
-// function pauseInactiveResumeActiveLLM() {
-//   pauseInactiveLLMs();
-//   resumeActiveLLM();
-// }
+function pauseInactiveResumeActiveLLM() {
+  pauseInactiveLLMs();
+  resumeActiveLLM();
+}
 
 
 
@@ -564,7 +556,6 @@ ipcRenderer.on('open-url', (event, url) => {
   //   // Use the token to authenticate with Claude AI
   //   authenticateWithClaude(token);
   // }
-  // } else 
   if (openLinkExternal) {
     shell.openExternal(url);
   } else {
@@ -582,28 +573,6 @@ function focusWebview(llmId) {
 function selectLLMTextarea() {
   let activeWebview = document.querySelector('.llm-browser.active');
 
-  // if (activeWebview && activeWebview.id === 'gemini') {
-
-  //   activeWebview.focus();
-
-  //   // activeWebview.getElementsByClassName('textarea')[0].focus();
-
-  //   activeWebview.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: false }));
-  //   activeWebview.dispatchEvent(new KeyboardEvent('keyup', { key: 'Tab', shiftKey: false }));
-  //   activeWebview.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: false }));
-  //   activeWebview.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: false }));
-  //   activeWebview.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: false }));
-  //   activeWebview.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: false }));
-    
-  // } else if (activeWebview && activeWebview.id === 'claude') {
-    
-  //   activeWebview.focus();
-    
-  //   for (let i = 0; i < 12; i++) {
-  //     activeWebview.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: false }));
-  //     activeWebview.dispatchEvent(new KeyboardEvent('keyup', { key: 'Tab', shiftKey: false }));
-  //   }
-  // } else 
   if (activeWebview) {
     
     activeWebview.focus();
@@ -621,31 +590,6 @@ window.addEventListener('focus', () => {
 });
 
 
-
-
-
-// let activeWebview = document.querySelector('.llm-browser.active');
-// let secondWebview = document.getElementById('browser-webview');
-
-// activeWebview.on('right-click', () => {
-//   tray.popUpContextMenu(contextMenu);
-// });
-
-// secondWebview.on('right-click', () => {
-//   tray.popUpContextMenu(contextMenu);
-// });
-
-
-
-
-
-// Currently failing, fix later
-// function printError(error) {
-//   // display the debug section and error
-//   let debugElement = document.getElementById('debug');
-//   debugElement.innerText = JSON.stringify(error.message);
-//   // debugElement.style.display = 'flex';
-// }
 
 
 function printDebug(message) {
@@ -833,12 +777,6 @@ document.addEventListener('DOMContentLoaded', () => {
   config = loadSettings();
   applySettings(config.settings);
 
-  // Initialize the src for each llm-browser webview
-  let webviews = document.querySelectorAll('.llm-browser');
-  webviews.forEach((webview) => {
-    webview.src = config.baseUrls[webview.id];
-  });
-
   // Initialize the src for the web-browser webview
   let webview = document.querySelector('.web-browser');
   webview.src = config.baseUrls['browserHomeUrl'];
@@ -855,9 +793,3 @@ function changeSetting(checked, setting) {
   saveSettings(config);
   applySettings(config.settings);
 } 
-
-
-
-
-
-
