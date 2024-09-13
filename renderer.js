@@ -1,9 +1,9 @@
+// ##### renderer.js
+
 const { ipcRenderer, shell, Menu, globalShortcut } = require('electron');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-
-// renderer.js
 
 let baseUrls = {
   perplexity: "https://www.perplexity.ai/",
@@ -794,9 +794,21 @@ function applySettings(settings){
   }
 
   if (settings.launchAtStartup) {
-    ipcRenderer.send('call-enableLaunchAtStartup');
+    ipcRenderer.invoke('call-isLaunchAtStartupEnabled').then((isEnabled) => {
+      if (!isEnabled) {
+        ipcRenderer.send('call-enableLaunchAtStartup');
+      }
+    }).catch((error) => {
+      console.error('Error checking launch at startup:', error);
+    });
   } else {
-    ipcRenderer.send('call-disableLaunchAtStartup');
+    ipcRenderer.invoke('call-isLaunchAtStartupEnabled').then((isEnabled) => {
+      if (isEnabled) {
+        ipcRenderer.send('call-disableLaunchAtStartup');
+      }
+    }).catch((error) => {
+      console.error('Error checking launch at startup:', error);
+    });
   }
 }
 

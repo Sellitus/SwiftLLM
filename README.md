@@ -10,7 +10,7 @@ A Windows and MacOS app to show and hide an LLM chat bot window using only a key
 I use LLMs, and I just LLMs A LOT. Because of this I (used to) have an entire browser I use just for LLM tabs and tabs I open from LLM search results. This approach works for me better, but still presents a few challenges that SwiftLLM helps with:
 - Clicking the browser window, going to the LLM tab, creating a new conversation, clicking the prompt input textarea, then typing your query is cumbersome when done often.
     - SwiftLLM: As soon as you hit CTRL/CMD + Space you can immediately start typing your query into an LLM. CTRL/CMD + R reloads the page, starting a new conversation.
-- Navigating back and forth between an LLM browser and another application can slow things down a lot, especially when app windows to be fullscreen.
+- Navigating back and forth between an LLM browser and another application can slow things down a lot, especially when an app window needs to be fullscreen/large
     - SwiftLLM: You can use CTRL/CMD + Space to show and hide the browser window for quick reference of an LLM response, and hide the window to go back to what you were doing quickly too.
 - Constantly closing and managing excessive open tabs, especially when checking information sources
     - For example: I often perform queries on Perplexity and ctrl + click links to reference sources, which leaves me with a huge amount of tabs I have to constantly close
@@ -67,12 +67,6 @@ I use LLMs, and I just LLMs A LOT. Because of this I (used to) have an entire br
 
 ## Known Issues
 
-- Some websites cause the app to complete freeze after working for a couple seconds. For example, visiting drive.google.com will freeze the app.
-
-- Performance will degrade if the app is open for a very long period of time. Usually the app performance improves after reloading the currently open web page.
-
 - Some logins don't work properly. For example, you can't login to Claude by clicking the link to login with your Google account. (NOTE: You can still login to Claude with your Google account if you input your account's email manually)
-
-- The run at startup option adds duplicate entries
 
 - Some LLMs don't allow apps to auto-focus the textarea to input a query, so you may not be able to type your prompt before manually clicking the prompt textarea. (NOTE: A workaround is to click the textarea before you hide the SwiftLLM window. When you use the key command the textarea will still be focused, and you can start typing your query immediately.)

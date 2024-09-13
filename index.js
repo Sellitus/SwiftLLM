@@ -1,4 +1,4 @@
-// index.js
+// ##### index.js
 
 
 const { app, BrowserWindow, globalShortcut, Menu, Tray, nativeImage, dialog, ipcRenderer, ipcMain } = require('electron')
@@ -80,16 +80,25 @@ async function createAndUpdateBlocker(session) {
       cachePath = path.join(__dirname, '../../adblocker_cache.bin');
     }
     
-    blocker = await ElectronBlocker.fromLists(fetch, [HAGEZI_LIST_URL, ONEHOSTS_LIST_URL, OISD_LIST_URL, ADGUARD_DNS_LIST_URL, ADGUARD_TRACKING_LIST_URL, EASYLIST_LIST_URL, EASYPRIVACY_LIST_URL, STEVEN_BLACK_LIST_URL], {
-      path: cachePath,
-      read: fs.readFile,
-      write: fs.writeFile,
-    });
-    const sessions = BrowserWindow.getAllWindows().map(window => window.webContents.session);
-    sessions.forEach(session => {
-      blocker.enableBlockingInSession(session);
-    });
-    console.log('Adblocker updated and enabled');
+    if (blocker) {
+      await blocker.updateFromLists(fetch, [HAGEZI_LIST_URL], {
+        path: cachePath,
+        read: fs.readFile,
+        write: fs.writeFile,
+      });
+      console.log('Adblocker updated');
+    } else {
+      blocker = await ElectronBlocker.fromLists(fetch, [HAGEZI_LIST_URL], {
+        path: cachePath,
+        read: fs.readFile,
+        write: fs.writeFile,
+      });
+      const sessions = BrowserWindow.getAllWindows().map(window => window.webContents.session);
+      sessions.forEach(session => {
+        blocker.enableBlockingInSession(session);
+      });
+      console.log('Adblocker created and enabled');
+    }
     return blocker;
   } catch (error) {
     console.error('Failed to update adblocker:', error);
@@ -117,7 +126,10 @@ function disableAdblocker() {
 
 
 
-
+ipcMain.handle('call-isLaunchAtStartupEnabled', () => {
+  const settings = app.getLoginItemSettings();
+  return settings.openAtLogin;
+});
 
 
 ipcMain.on('call-createAndUpdateaAblocker', (eventß) => {
@@ -125,14 +137,16 @@ ipcMain.on('call-createAndUpdateaAblocker', (eventß) => {
     blocker = result;
   });
   // Set up automatic updates (e.g., every 1 hour)
-  const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
-  intervalId = setInterval(() => {
-    createAndUpdateBlocker().then(result => {
-      if (result) {
-        blocker = result;
-      }
-    });
-  }, UPDATE_INTERVAL);
+  if (!intervalId) {
+    const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+    intervalId = setInterval(() => {
+      createAndUpdateBlocker().then(result => {
+        if (result) {
+          blocker = result;
+        }
+      });
+    }, UPDATE_INTERVAL);
+  }
 });
 
 ipcMain.on('call-disableAdblocker', (event) => {
